@@ -2,6 +2,7 @@ import os
 import sys
 import pygame as pg
 import random
+import time
 
 
 WIDTH, HEIGHT = 1100, 650
@@ -24,6 +25,31 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
     if rct.top < 0 or HEIGHT < rct.bottom:
         tate = False
     return yoko, tate
+
+def gameover(screen: pg.Surface) -> None:
+    """
+    ゲームオーバーを表示する関数
+    引数：画面Surface
+    戻り値：なし
+    """
+    bg_Suf = pg.Surface((WIDTH, HEIGHT))
+    bg_Suf.fill((0, 0, 0))
+    bg_Suf.set_alpha(200)
+
+    ft = pg.font.Font(None, 80)
+    txt = ft.render("Game Over", True, (255, 225, 225))
+    txt_rct = txt.get_rect(center=(WIDTH/2, HEIGHT/2))
+    bg_Suf.blit(txt, txt_rct) # 2秒待機
+    
+    kk2_img = pg.transform.rotozoom(pg.image.load("fig/8.png"), 0, 1.0)
+    img2_rct = kk2_img.get_rect(center=(WIDTH/2, HEIGHT/2))
+    bg_Suf.blit(kk2_img, (img2_rct.left+200, img2_rct.top))
+    bg_Suf.blit(kk2_img, (img2_rct.left-200, img2_rct.top))
+
+    screen.blit(bg_Suf, [0, 0])
+    pg.display.update()
+    time.sleep(5)
+    return
 
 
 def main():
@@ -48,6 +74,7 @@ def main():
             if event.type == pg.QUIT: 
                 return
         if kk_rct.colliderect(bb_rct):
+            gameover(screen)
             print("GAME OVER")
             return #GEME OVER
         screen.blit(bg_img, [0, 0]) 
