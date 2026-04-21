@@ -26,22 +26,41 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
         tate = False
     return yoko, tate
 
+def get_kk_imags(kk_img: pg.Surface) -> dict[tuple[int, int], pg.Surface]:
+    """
+    こうかとんの画像を辞書型で管理する関数
+    引数：こうかとんの画像Surface
+    戻り値：こうかとんの画像辞書
+    """
+    kk_dict = {
+        ( 0, 0): pg.transform.rotozoom(kk_img, 0, 1.0),
+        (+5,  0): pg.transform.rotozoom(kk_img, 180, 1.0),
+        (+5, -5): pg.transform.rotozoom(kk_img, 135, 1.0),
+        ( 0, -5): pg.transform.rotozoom(kk_img, 90, 1.0),
+        (-5, -5): pg.transform.rotozoom(kk_img, 45, 1.0),
+        (-5,  0): pg.transform.rotozoom(kk_img, 0, 1.0),
+        (-5, +5): pg.transform.rotozoom(kk_img, 315, 1.0),
+        ( 0, +5): pg.transform.rotozoom(kk_img, 270, 1.0),
+        (+5, +5): pg.transform.rotozoom(kk_img, 225, 1.0)
+    }
+    return kk_dict
+
 def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
     """
-    爆弾の画像と速度を初期化する関数
+    爆弾のサイズと速度を変える関数
     引数：なし
     戻り値：爆弾の画像リスト、爆弾の速度リスト
     """
-    bb_imags = []
+    bb_imgs = []
     bb_accs = []
     for r in range(1, 11):
         bb_img = pg.Surface((20*r, 20*r))
         bb_img.set_colorkey((0, 0, 0))
         pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
-        bb_imags.append(bb_img)
+        bb_imgs.append(bb_img)
         bb_accs = [a for a in range(1, 11)]
 
-    return bb_imags, bb_accs
+    return bb_imgs, bb_accs
 
 def gameover(screen: pg.Surface) -> None:
     """
@@ -88,7 +107,8 @@ def main():
     vx, vy = +5, +5
     clock = pg.time.Clock()
     tmr = 0
-    bb_imags, bb_accs = init_bb_imgs()
+    bb_imgs, bb_accs = init_bb_imgs()
+    kk_imgs = get_kk_imags(kk_img)
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -101,7 +121,7 @@ def main():
 
         avx = vx*bb_accs[min(tmr//500, 9)]
         avy = vy*bb_accs[min(tmr//500, 9)]
-        bb_img = bb_imags[min(tmr//500, 9)]
+        bb_img = bb_imgs[min(tmr//500, 9)]
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
@@ -120,6 +140,7 @@ def main():
         kk_rct.move_ip(sum_mv)
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
+        kk_img = kk_imgs[tuple(sum_mv)]
         screen.blit(kk_img, kk_rct)
         bb_rct.move_ip(avx, avy)
         yoko, tate = check_bound(bb_rct)
