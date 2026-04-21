@@ -32,7 +32,7 @@ def get_kk_imags(kk_img: pg.Surface) -> dict[tuple[int, int], pg.Surface]:
     引数：こうかとんの画像Surface
     戻り値：こうかとんの画像辞書
     """
-    kk_flip = pg.transform.flip(kk_img, True, False)
+    kk_flip = pg.transform.flip(kk_img, True, False) #反転画像の実装
     kk_dict = {
         ( 0, 0): pg.transform.rotozoom(kk_img, 0, 1.0),
         (+5,  0): pg.transform.rotozoom(kk_flip, 0, 1.0),
