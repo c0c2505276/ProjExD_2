@@ -32,16 +32,17 @@ def get_kk_imags(kk_img: pg.Surface) -> dict[tuple[int, int], pg.Surface]:
     引数：こうかとんの画像Surface
     戻り値：こうかとんの画像辞書
     """
+    kk_flip = pg.transform.flip(kk_img, True, False)
     kk_dict = {
         ( 0, 0): pg.transform.rotozoom(kk_img, 0, 1.0),
-        (+5,  0): pg.transform.rotozoom(kk_img, 180, 1.0),
-        (+5, -5): pg.transform.rotozoom(kk_img, 135, 1.0),
-        ( 0, -5): pg.transform.rotozoom(kk_img, 90, 1.0),
-        (-5, -5): pg.transform.rotozoom(kk_img, 45, 1.0),
+        (+5,  0): pg.transform.rotozoom(kk_flip, 0, 1.0),
+        (+5, -5): pg.transform.rotozoom(kk_flip, 45, 1.0),
+        ( 0, -5): pg.transform.rotozoom(kk_flip, 90, 1.0),
+        (-5, -5): pg.transform.rotozoom(kk_img, 315, 1.0),
         (-5,  0): pg.transform.rotozoom(kk_img, 0, 1.0),
-        (-5, +5): pg.transform.rotozoom(kk_img, 315, 1.0),
-        ( 0, +5): pg.transform.rotozoom(kk_img, 270, 1.0),
-        (+5, +5): pg.transform.rotozoom(kk_img, 225, 1.0)
+        (-5, +5): pg.transform.rotozoom(kk_img, 45, 1.0),
+        ( 0, +5): pg.transform.rotozoom(kk_flip, 270, 1.0),
+        (+5, +5): pg.transform.rotozoom(kk_flip, 315, 1.0)
     }
     return kk_dict
 
