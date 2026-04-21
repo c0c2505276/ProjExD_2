@@ -26,6 +26,23 @@ def check_bound(rct: pg.Rect) -> tuple[bool, bool]:
         tate = False
     return yoko, tate
 
+def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
+    """
+    爆弾の画像と速度を初期化する関数
+    引数：なし
+    戻り値：爆弾の画像リスト、爆弾の速度リスト
+    """
+    bb_imags = []
+    bb_accs = []
+    for r in range(1, 11):
+        bb_img = pg.Surface((20*r, 20*r))
+        bb_img.set_colorkey((0, 0, 0))
+        pg.draw.circle(bb_img, (255, 0, 0), (10*r, 10*r), 10*r)
+        bb_imags.append(bb_img)
+        bb_accs = [a for a in range(1, 11)]
+
+    return bb_imags, bb_accs
+
 def gameover(screen: pg.Surface) -> None:
     """
     ゲームオーバーを表示する関数
@@ -66,9 +83,12 @@ def main():
     # bb_rct.center = random.randint(0, WIDTH), random.randint(0, HEIGHT)
     bb_rct.centerx = random.randint(0, WIDTH)
     bb_rct.centery = random.randint(0, HEIGHT)
+    bb_rct.width = bb_img.get_rect().width
+    bb_rct.height = bb_img.get_rect().height
     vx, vy = +5, +5
     clock = pg.time.Clock()
     tmr = 0
+    bb_imags, bb_accs = init_bb_imgs()
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT: 
@@ -78,6 +98,10 @@ def main():
             print("GAME OVER")
             return #GEME OVER
         screen.blit(bg_img, [0, 0]) 
+
+        avx = vx*bb_accs[min(tmr//500, 9)]
+        avy = vy*bb_accs[min(tmr//500, 9)]
+        bb_img = bb_imags[min(tmr//500, 9)]
 
         key_lst = pg.key.get_pressed()
         sum_mv = [0, 0]
@@ -97,7 +121,7 @@ def main():
         if check_bound(kk_rct) != (True, True):
             kk_rct.move_ip(-sum_mv[0], -sum_mv[1])
         screen.blit(kk_img, kk_rct)
-        bb_rct.move_ip(vx, vy)
+        bb_rct.move_ip(avx, avy)
         yoko, tate = check_bound(bb_rct)
         if not yoko:
             vx *= -1 
