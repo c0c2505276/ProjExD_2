@@ -43,7 +43,7 @@ def get_kk_imags(kk_img: pg.Surface) -> dict[tuple[int, int], pg.Surface]:
         (-5, +5): pg.transform.rotozoom(kk_img, 45, 1.0),
         ( 0, +5): pg.transform.rotozoom(kk_flip, 270, 1.0),
         (+5, +5): pg.transform.rotozoom(kk_flip, 315, 1.0)
-    }
+    } #角度調整
     return kk_dict
 
 def init_bb_imgs() -> tuple[list[pg.Surface], list[int]]:
